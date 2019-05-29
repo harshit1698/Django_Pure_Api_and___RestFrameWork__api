@@ -17,13 +17,22 @@ from django.conf.urls import url,include
 from django.contrib import admin
 from . import views
 
+app_name="Rest"
+
 urlpatterns = [
     # url(r'^admin/', admin.site.urls),
     # url(r'^pure/',include("pure_api.urls")),
     url(r'^list/',views.Create.as_view()),
+    url(r'^gett/(?P<id>\d+)',views.details.as_view()),
     url(r'^c1/',views.CBV_create.as_view()),
-    url(r'^d/(?P<pk>\d+)',views.Del.as_view()),
-    url(r'^up/(?P<pk>\d+)',views.Up.as_view()),
+    url(r'^del/(?P<id>\d+)',views.Del.as_view()),
+    url(r'^up/(?P<id>\d+)',views.Up.as_view()),
+    url(r'^all/',views.APIVieww.as_view()),
+    url(r'^begin',views.Beginning.as_view()),
+    url(r'^show/',views.List.as_view()),
+    url(r'^yo/(?P<id>\d+)',views.Ree.as_view()),
+    url(r'^see/',views.YoBoy.as_view(),name="Ap"),
+    url(r'^register/',views.RegisterView.as_view())
 
 ]
 

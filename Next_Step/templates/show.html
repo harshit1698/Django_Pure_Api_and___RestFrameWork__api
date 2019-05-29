@@ -1,3 +1,8 @@
-{% for i in o2 %}
-    <a href="#" ><h2>{{ i.name }}</h2></a>
-{% endfor %}
+{% for i in object_list %}
+{#    <a href="">{{ i.image }}</a>#}
+{#     <a href=" {{ }}">Clcik</a>#}
+{#    <a href="{{ i.open }}" target="_blank">{{ i.name }}</a>#}
+{#    <img src="{{ i.open }}" alt="{{ i.name }} Image"/>#}
+    <a href="{{ i.open }}{{ i.image }}" target="_blank">{{ i.name }}</a>
+    <br/>
+{%  endfor %}

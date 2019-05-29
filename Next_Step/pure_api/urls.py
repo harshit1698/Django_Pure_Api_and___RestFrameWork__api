@@ -21,7 +21,7 @@ app_name="PURE_API"
 
 urlpatterns = [
     # url(r'^admin/', admin.site.urls),
-    url(r'^get/(?P<id>\d+)/',views.CBV.as_view()),
+    url(r'^yo/(?P<id>\d+)/',views.CBV.as_view()),
     url(r'^get/', views.CBV.as_view()),
     url(r'^post/',views.CBV.as_view()),
     url(r'^del/(?P<id>\d+)', views.CBV.as_view()),

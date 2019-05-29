@@ -26,7 +26,8 @@ class CBV(Exemptmixin, View):
     def get(self, request, id=None, *args, **kwargs):
         if id is None:
             o2 = RK.objects.all()
-            d1 = serialize("json", o2)
+            # d1 = serialize("json", o2)
+            d1 = o2.serialize()
             # d2=json.dumps(d1)
             return JsonResponse(d1, safe=False)
         else:
@@ -35,29 +36,45 @@ class CBV(Exemptmixin, View):
             return JsonResponse(d1, safe=False)
 
     def post(self, request, *args, **kwargs):
+        if request.method == "POST":
+             print(request.POST)
+        else:
+            print("Error")
         f = RKModelForm(request.POST)
         if f.is_valid():
             obj = f.save(commit=True)
-        d = serialize("json", [obj, ])
-        return JsonResponse(d, safe=False)
+            d = obj.serialize()
+            return JsonResponse(d, safe=False)
+        if f.errors:
+            data=json.dumps(f.errors)
+            return JsonResponse(data,safe=False)
 
     def delete(self, request, id, *args, **kwargs):
         if id is not None:
             o = get_object_or_404(RK, id=id)
             o.delete()
-            return JsonResponse({"deletee": "Yo"})
-
+            res = json.dumps({"deletee": "Yo"})
+            return JsonResponse(res, status=201,safe=False)
+        else:
+            res = json.dumps({"Delete": "Already deleted"})
+            return JsonResponse(res, status=404 ,safe=False)
 
     def put(self, request, id, *args, **kwargs):
         print(request.body)
-        o1 = RK.objects.get(id=id)
-        old = json.loads(serialize("json", [o1,]))
-        # new = json.loads(request.body)
-        j=BytesIO(request.body)
-        new=JSONParser().parse(j)
-        for key, value in new.items():
-            old[key] = value
-        form = RKModelForm(new, instance=o1)
-        obj = form.save(commit=True)
-        d1 = json.dumps(obj)
-        return JsonResponse(d1)
+        # data=serialize("json",request.body)
+        passed_data = json.loads(request.body)
+        obj = RK.objects.filter(id=id)
+        if obj is None:
+            error_data = json.dumps({"Error": "Object Not Found"})
+            return JsonResponse(error_data, status=404,safe=False)
+        data = json.loads(obj.serialize())
+        for key, value in passed_data.items():
+            data[key] = value
+        form = RKModelForm(data, instance=obj)
+        if form.is_valid():
+            obj = form.save(commit=True)
+            d1 = json.dump(data)
+            return JsonResponse(d1, status=201,safe=False)
+        if form.errors:
+            d1 = json.dumps(form.errors)
+            return JsonResponse(d1, status=400,safe=False)
